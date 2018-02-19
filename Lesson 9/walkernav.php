@@ -7,7 +7,7 @@ use Walker_Nav_Menu;
 class walkernav extends Walker_Nav_Menu
 {
 
-    public $megaMenuID;
+ public $megaMenuID;
 
     public $count;
 
@@ -25,7 +25,8 @@ class walkernav extends Walker_Nav_Menu
         $output .= "\n$indent<ul class=\"dropdown-menu$submenu depth_$depth\" >\n";
 
         if ($this->megaMenuID != 0 && $depth == 0) {
-            $output .= "<li class=\"megamenu-column\"><ul>\n";
+
+            $output .= "";
         }
         
     }
@@ -38,7 +39,7 @@ class walkernav extends Walker_Nav_Menu
 
         $output .= "</ul>";
     }
-
+   
     public function start_el(&$output, $item, $depth = 0, $args = array(), $id = 0)
     {
 
@@ -58,12 +59,18 @@ class walkernav extends Walker_Nav_Menu
         if ($this->megaMenuID != 0 && $this->megaMenuID != intval($item->menu_item_parent) && $depth == 0) {
             $this->megaMenuID = 0;
         }
-
+        if ($depth==0) $this->$count=0; 
         // $column_divider = array_search('column-divider', $classes);
         if ($hasColumnDivider) {
             array_push($classes, 'column-divider');
-            $output .= "</ul></li><li class=\"megamenu-column\"><ul>\n";
+            if ($depth==1 && $this->$count==1) {
+            	$output .= "</li><li class=\"megamenu-column\"><ul>\n";
+            }else{
+            	 $output .= "</ul></li><li class=\"megamenu-column\"><ul>\n";
+            }
+           
         }
+        $this->$count++;
 
         // managing divider: add divider class to an element to get a divider before it.
         // $divider_class_position = array_search('divider', $classes);
@@ -104,7 +111,7 @@ class walkernav extends Walker_Nav_Menu
         $attributes .= !empty($item->target) ? ' target="'.esc_attr($item->target).'"' : '';
         $attributes .= !empty($item->xfn) ? ' rel="'.esc_attr($item->xfn).'"' : '';
         $attributes .= !empty($item->url) ? ' href="'.esc_attr($item->url).'"' : '';
-        $attributes .= ($args->has_children) ? ' class="dropdown-toggle" data-toggle="dropdown"' : '';
+        $attributes .= ($args->has_children) ? ' class="dropdown-toggle nav-link" data-toggle="dropdown"' : 'class="nav-link"';
 
         $item_output = $args->before;
         $item_output .= '<a'.$attributes.'>';
